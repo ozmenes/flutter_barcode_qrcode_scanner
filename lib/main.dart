@@ -31,10 +31,9 @@ class BarcodeQrCodeScanner extends StatefulWidget {
 
 class _BarcodeQrCodeScannerState extends State<BarcodeQrCodeScanner> {
   String _scanBarcode = '';
-  final String error="Sorry, but we couldn't find the page you are looking for!!!";
+
   @override
   void initState() {
-    _launchURL(error);
     super.initState();
   }
   startBarcodeScanStream() async {
@@ -99,11 +98,13 @@ class _BarcodeQrCodeScannerState extends State<BarcodeQrCodeScanner> {
   }
   void _launchURL(String url) async {
     try{
-      await canLaunch(url) ? await launch(url) : throw 'Could not launch $url';
-    }catch(e){
-      setState(() {
-        _scanBarcode=error;
-      });
+      await canLaunch(url) ? await launch(url): throw {
+        setState(() {
+          _scanBarcode="The Link You Followed Has Expired.";
+        })
+      };
+    }catch(error){
+      print(error);
     }
   }
 
@@ -158,8 +159,8 @@ class _BarcodeQrCodeScannerState extends State<BarcodeQrCodeScanner> {
                         border: Border.all(color: Colors.teal,width: 2),
                       ),
                       child: Center(
-                        child: Text('Scan result: $_scanBarcode\n',
-                            style: TextStyle(fontSize: 20,color: Colors.teal)),
+                        child: Text('Scan result:\n$_scanBarcode\n',
+                            style: TextStyle(fontSize: 18,color: Colors.teal)),
                       ),
                     ),
                     SizedBox(height: 30,),
